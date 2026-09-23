@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${title} + ' · TaskFlow'">TaskFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<!-- ============ NAV ============ -->
+<nav class="topbar" th:fragment="nav(fullName)">
+    <a class="brand" th:href="@{/tasks}">
+        <span class="brand-mark">TF</span>
+        <span class="brand-word">TaskFlow</span>
+    </a>
+    <div class="nav-right">
+        <span class="nav-user" th:if="${fullName != null}" th:text="${fullName}">User</span>
+        <form th:action="@{/logout}" method="post" class="inline-form">
+            <button type="submit" class="btn-ghost">Sign out</button>
+        </form>
+    </div>
+</nav>
+</body>
+</html>

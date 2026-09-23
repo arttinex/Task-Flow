@@ -1,0 +1,47 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: taskflow:latest
+    container_name: taskflow-app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      MONGODB_URI: mongodb://${MONGO_USER:-taskflow}:${MONGO_PASSWORD:-taskflow}@mongo:27017/taskflow?authSource=admin
+      PORT: 8080
+      THYMELEAF_CACHE: "true"
+      JAVA_OPTS: "-Xms256m -Xmx512m"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - taskflow-net
+
+  mongo:
+    image: mongo:7
+    container_name: taskflow-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-taskflow}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-taskflow}
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - taskflow-net
+    # Not published to the host on purpose — only the app service on this
+    # network can reach it; nothing outside the compose network can.
+
+networks:
+  taskflow-net:
+    driver: bridge
+
+volumes:
+  mongo-data:

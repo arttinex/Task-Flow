@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Sign in')}"></head>
+<body>
+<main class="auth-shell">
+    <section class="auth-card">
+        <p class="eyebrow">Daily tasks, handled</p>
+        <h1 class="auth-title">TaskFlow</h1>
+        <p class="auth-sub">Sign in to your board.</p>
+
+        <div class="banner banner-success" th:if="${param.registered != null}">
+            Account created — sign in below.
+        </div>
+        <div class="banner banner-success" th:if="${param.logout != null}">
+            You've been signed out.
+        </div>
+        <div class="banner banner-error" th:if="${param.error != null}">
+            Incorrect username or password.
+        </div>
+
+        <form th:action="@{/login}" method="post" class="stacked-form">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" required autofocus autocomplete="username"/>
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" required autocomplete="current-password"/>
+
+            <button type="submit" class="btn-primary btn-block">Sign in</button>
+        </form>
+
+        <p class="auth-switch">New here? <a th:href="@{/register}">Create an account</a></p>
+    </section>
+</main>
+</body>
+</html>

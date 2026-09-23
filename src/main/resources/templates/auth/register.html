@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Create account')}"></head>
+<body>
+<main class="auth-shell">
+    <section class="auth-card">
+        <p class="eyebrow">Daily tasks, handled</p>
+        <h1 class="auth-title">Create your account</h1>
+        <p class="auth-sub">One board, just your tasks.</p>
+
+        <div class="banner banner-error" th:if="${serverError != null}" th:text="${serverError}"></div>
+
+        <form th:action="@{/register}" th:object="${registerForm}" method="post" class="stacked-form">
+            <label for="fullName">Full name</label>
+            <input id="fullName" th:field="*{fullName}" type="text" autofocus/>
+            <p class="field-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></p>
+
+            <label for="username">Username</label>
+            <input id="username" th:field="*{username}" type="text" autocomplete="username"/>
+            <p class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+
+            <label for="email">Email</label>
+            <input id="email" th:field="*{email}" type="email" autocomplete="email"/>
+            <p class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+
+            <label for="password">Password</label>
+            <input id="password" th:field="*{password}" type="password" autocomplete="new-password"/>
+            <p class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+
+            <label for="confirmPassword">Confirm password</label>
+            <input id="confirmPassword" th:field="*{confirmPassword}" type="password" autocomplete="new-password"/>
+            <p class="field-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></p>
+
+            <button type="submit" class="btn-primary btn-block">Create account</button>
+        </form>
+
+        <p class="auth-switch">Already have an account? <a th:href="@{/login}">Sign in</a></p>
+    </section>
+</main>
+</body>
+</html>

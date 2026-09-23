@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Your tasks')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav(${fullName})}"></div>
+
+<main class="board">
+    <header class="board-header">
+        <div>
+            <p class="eyebrow">Today's board</p>
+            <h1 class="board-title">Your tasks</h1>
+        </div>
+        <a th:href="@{/tasks/new}" class="btn-primary">+ New task</a>
+    </header>
+
+    <nav class="filter-tabs">
+        <a th:href="@{/tasks}" th:class="${activeFilter == null} ? 'tab tab-active' : 'tab'">
+            All <span class="tab-count" th:text="${counts.get('PENDING') + counts.get('IN_PROGRESS') + counts.get('COMPLETED')}">0</span>
+        </a>
+        <a th:href="@{/tasks(status='PENDING')}" th:class="${activeFilter != null and activeFilter.name() == 'PENDING'} ? 'tab tab-active' : 'tab'">
+            Pending <span class="tab-count" th:text="${counts.get('PENDING')}">0</span>
+        </a>
+        <a th:href="@{/tasks(status='IN_PROGRESS')}" th:class="${activeFilter != null and activeFilter.name() == 'IN_PROGRESS'} ? 'tab tab-active' : 'tab'">
+            In progress <span class="tab-count" th:text="${counts.get('IN_PROGRESS')}">0</span>
+        </a>
+        <a th:href="@{/tasks(status='COMPLETED')}" th:class="${activeFilter != null and activeFilter.name() == 'COMPLETED'} ? 'tab tab-active' : 'tab'">
+            Done <span class="tab-count" th:text="${counts.get('COMPLETED')}">0</span>
+        </a>
+    </nav>
+
+    <section class="task-list" th:if="${!tasks.isEmpty()}">
+        <article class="task-row" th:each="task, iter : ${tasks}" th:style="'--row-index:' + ${iter.index}">
+            <form th:action="@{/tasks/{id}/toggle(id=${task.id})}" method="post" class="inline-form">
+                <button type="submit" class="status-dot" th:classappend="'status-' + ${task.status}"
+                        th:title="${task.status == T(com.taskflow.model.TaskStatus).COMPLETED} ? 'Reopen task' : 'Advance status'">
+                    <span th:if="${task.status.name() == 'COMPLETED'}">&#10003;</span>
+                </button>
+            </form>
+
+            <div class="task-body">
+                <p class="task-title" th:classappend="${task.status.name() == 'COMPLETED'} ? 'task-title-done' : ''"
+                   th:text="${task.title}">Task title</p>
+                <p class="task-meta">
+                    <span th:if="${task.dueDate != null}" th:text="'Due ' + ${#temporals.format(task.dueDate, 'MMM d')}">Due date</span>
+                    <span th:unless="${task.dueDate != null}" class="muted">No due date</span>
+                    &middot;
+                    <span th:text="${task.status.name().toLowerCase().replace('_',' ')}" class="status-label">pending</span>
+                </p>
+            </div>
+
+            <span class="priority-pill" th:classappend="'priority-' + ${task.priority}" th:text="${task.priority}">MEDIUM</span>
+
+            <div class="task-actions">
+                <a th:href="@{/tasks/{id}/edit(id=${task.id})}" class="btn-ghost btn-small">Edit</a>
+                <form th:action="@{/tasks/{id}/delete(id=${task.id})}" method="post" class="inline-form"
+                      onsubmit="return confirm('Delete this task?');">
+                    <button type="submit" class="btn-ghost btn-small btn-danger">Delete</button>
+                </form>
+            </div>
+        </article>
+    </section>
+
+    <section class="empty-state" th:if="${tasks.isEmpty()}">
+        <p class="empty-title">Nothing here yet</p>
+        <p class="empty-sub">Add your first task to start the day.</p>
+        <a th:href="@{/tasks/new}" class="btn-primary">+ New task</a>
+    </section>
+</main>
+
+<script th:src="@{/js/app.js}" defer></script>
+</body>
+</html>

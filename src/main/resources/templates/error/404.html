@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Not found')}"></head>
+<body>
+<main class="auth-shell">
+    <section class="auth-card">
+        <p class="eyebrow">404</p>
+        <h1 class="auth-title">Not found</h1>
+        <p class="auth-sub" th:text="${message} ?: 'That task does not exist, or is not yours.'">Not found.</p>
+        <a th:href="@{/tasks}" class="btn-primary btn-block">Back to your board</a>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${isEdit} ? 'Edit task' : 'New task')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav(null)}"></div>
+
+<main class="board board-narrow">
+    <header class="board-header">
+        <div>
+            <p class="eyebrow" th:text="${isEdit} ? 'Editing' : 'New entry'">New entry</p>
+            <h1 class="board-title" th:text="${isEdit} ? 'Edit task' : 'New task'">New task</h1>
+        </div>
+    </header>
+
+    <form class="card-form"
+          th:action="${isEdit} ? @{/tasks/{id}(id=${taskForm.id})} : @{/tasks}"
+          th:object="${taskForm}" method="post">
+
+        <label for="title">Title</label>
+        <input id="title" th:field="*{title}" type="text" autofocus placeholder="What needs doing?"/>
+        <p class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+
+        <label for="description">Description</label>
+        <textarea id="description" th:field="*{description}" rows="3" placeholder="Optional details"></textarea>
+        <p class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+
+        <div class="form-row">
+            <div class="form-col">
+                <label for="dueDate">Due date</label>
+                <input id="dueDate" th:field="*{dueDate}" type="date"/>
+            </div>
+            <div class="form-col">
+                <label for="priority">Priority</label>
+                <select id="priority" th:field="*{priority}">
+                    <option th:each="p : ${T(com.taskflow.model.Priority).values()}" th:value="${p}" th:text="${p}"></option>
+                </select>
+            </div>
+            <div class="form-col">
+                <label for="status">Status</label>
+                <select id="status" th:field="*{status}">
+                    <option th:each="s : ${T(com.taskflow.model.TaskStatus).values()}" th:value="${s}" th:text="${s}"></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a th:href="@{/tasks}" class="btn-ghost">Cancel</a>
+            <button type="submit" class="btn-primary" th:text="${isEdit} ? 'Save changes' : 'Add task'">Add task</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: taskflow
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/taskflow}
+
+  thymeleaf:
+    # Disable Thymeleaf's own template cache only in dev via SPRING_PROFILES_ACTIVE=dev;
+    # production always caches compiled templates.
+    cache: ${THYMELEAF_CACHE:true}
+    encoding: UTF-8
+
+  jackson:
+    time-zone: UTC
+
+server:
+  port: ${PORT:8080}
+  compression:
+    # Gzip API/HTML responses over 1KB — cheap bandwidth win on every page load.
+    enabled: true
+    mime-types: text/html,text/css,application/javascript,application/json
+    min-response-size: 1024
+  error:
+    whitelabel:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: WARN
+    com.taskflow: INFO
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  thymeleaf:
+    cache: false
+logging:
+  level:
+    com.taskflow: DEBUG
