@@ -2,9 +2,10 @@ spring:
   application:
     name: taskflow
 
-  data:
-    mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/taskflow}
+  spring:
+    data:
+      mongodb:
+        uri: ${MONGODB_URI:mongodb://localhost:27017/taskflow}
 
   thymeleaf:
     # Disable Thymeleaf's own template cache only in dev via SPRING_PROFILES_ACTIVE=dev;
